@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NexFood</title>
+<link href="https://fonts.googleapis.com/css2?family=Righteous&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --purple:#7C3AED;--purple-light:#A78BFA;--purple-dark:#5B21B6;
+  --gray-burger:#C4C4C4;--gray-light:#F3F0FF;--white:#FFFFFF;
+  --text-dark:#1E1B4B;--text-mid:#6B7280;--input-border:#DDD6FE;
+  --green:#10B981;--orange:#F59E0B;--red:#EF4444;
+}
+
+/* ══ SCREENS ══ */
+.screen{display:none;min-height:100vh;width:100%;animation:fadeIn .4s ease both}
+.screen.active{display:flex}
+@keyframes fadeIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+/* ══════════════════ LOGIN SCREEN ══════════════════ */
+#screen-auth{
+  background:var(--white);flex-direction:column;
+  align-items:center;justify-content:center;
+  position:relative;overflow:hidden;
+}
+.bg-pattern{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+.burger-icon{position:absolute;opacity:.13;animation:floatBurger linear infinite}
+.burger-icon svg{fill:var(--gray-burger)}
+@keyframes floatBurger{
+  0%{transform:translateY(0) rotate(0deg)}
+  50%{transform:translateY(-18px) rotate(8deg)}
+  100%{transform:translateY(0) rotate(0deg)}
+}
+.auth-card{
+  position:relative;z-index:10;background:var(--white);
+  border-radius:28px;
+  box-shadow:0 8px 48px rgba(124,58,237,.13),0 2px 12px rgba(0,0,0,.06);
+  padding:44px 38px 38px;width:100%;max-width:420px;
+  animation:slideUp .6s cubic-bezier(.22,1,.36,1) both;
+}
+@keyframes slideUp{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)}}
+.logo-area{text-align:center;margin-bottom:6px}
+.logo-emoji{font-size:50px;display:block;margin-bottom:2px;animation:bounceIn .7s .2s cubic-bezier(.22,1,.36,1) both}
+@keyframes bounceIn{0%{transform:scale(.5);opacity:0}70%{transform:scale(1.12)}100%{transform:scale(1);opacity:1}}
+.logo-name{font-family:'Righteous',cursive;font-size:50px;color:var(--purple);letter-spacing:2px;line-height:1;text-shadow:0 4px 18px rgba(124,58,237,.18)}
+.tagline{text-align:center;font-size:15px;color:var(--text-mid);font-weight:600;margin-top:8px;margin-bottom:28px}
+.tagline span{color:var(--purple);font-weight:800}
+.tabs{display:flex;background:var(--gray-light);border-radius:14px;padding:4px;margin-bottom:26px;gap:4px}
+.tab-btn{flex:1;padding:10px;border:none;background:transparent;border-radius:11px;font-family:'Nunito',sans-serif;font-size:14px;font-weight:700;color:var(--text-mid);cursor:pointer;transition:all .25s}
+.tab-btn.active{background:var(--purple);color:#fff;box-shadow:0 3px 12px rgba(124,58,237,.35)}
+.form-group{margin-bottom:16px}
+label{display:block;font-size:13px;font-weight:700;color:var(--text-dark);margin-bottom:5px;letter-spacing:.3px}
+.input-wrap{position:relative}
+.input-icon{position:absolute;left:13px;top:50%;transform:translateY(-50%);font-size:16px;pointer-events:none}
+input[type=text],input[type=email],input[type=password]{
+  width:100%;padding:12px 13px 12px 40px;border:2px solid var(--input-border);
+  border-radius:12px;font-family:'Nunito',sans-serif;font-size:15px;font-weight:600;
+  color:var(--text-dark);background:#FAFAFE;outline:none;
+  transition:border-color .2s,box-shadow .2s;
+}
+input:focus{border-color:var(--purple);box-shadow:0 0 0 4px rgba(124,58,237,.10);background:#fff}
+input::placeholder{color:#C4B5FD;font-weight:600}
+.forgot{text-align:right;margin-top:-8px;margin-bottom:18px}
+.forgot a{font-size:13px;color:var(--purple-light);font-weight:700;text-decoration:none;transition:color .2s}
+.forgot a:hover{color:var(--purple)}
+.btn-main{width:100%;padding:14px;background:linear-gradient(135deg,var(--purple),var(--purple-dark));color:#fff;border:none;border-radius:14px;font-family:'Nunito',sans-serif;font-size:16px;font-weight:800;letter-spacing:.5px;cursor:pointer;transition:transform .15s,box-shadow .2s;box-shadow:0 4px 18px rgba(124,58,237,.38);position:relative;overflow:hidden}
+.btn-main::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,rgba(255,255,255,.12),transparent);border-radius:14px}
+.btn-main:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(124,58,237,.45)}
+.btn-main:active{transform:translateY(0)}
+.divider{display:flex;align-items:center;gap:10px;margin:20px 0;color:#C4B5FD;font-size:13px;font-weight:700}
+.divider::before,.divider::after{content:'';flex:1;height:1.5px;background:var(--input-border);border-radius:2px}
+.social-row{display:flex;gap:12px}
+.btn-social{flex:1;padding:10px 6px;border:2px solid var(--input-border);border-radius:12px;background:#fff;font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;color:var(--text-dark);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;transition:border-color .2s,background .2s}
+.btn-social:hover{border-color:var(--purple-light);background:var(--gray-light)}
+.bottom-note{text-align:center;margin-top:18px;font-size:13px;color:var(--text-mid);font-weight:600}
+.bottom-note a{color:var(--purple);font-weight:800;text-decoration:none}
+.panel{display:none}
+.panel.active{display:block;animation:fadeIn .3s ease both}
+
+/* ── success toast ── */
+.toast{
+  position:fixed;top:24px;left:50%;transform:translateX(-50%) translateY(-80px);
+  background:var(--green);color:#fff;font-family:'Nunito',sans-serif;font-weight:700;
+  font-size:14px;padding:12px 22px;border-radius:50px;z-index:999;
+  box-shadow:0 4px 20px rgba(0,0,0,.15);transition:transform .4s cubic-bezier(.22,1,.36,1);
+  white-space:nowrap;
+}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+
+/* ══════════════════ HOME SCREEN ══════════════════ */
+#screen-home{
+  flex-direction:column;background:#F8F7FF;
+  font-family:'Nunito',sans-serif;overflow-x:hidden;
+}
+
+/* top bar */
+.topbar{
+  background:#fff;padding:16px 20px 12px;
+  box-shadow:0 2px 12px rgba(124,58,237,.08);
+  position:sticky;top:0;z-index:100;
+}
+.topbar-row1{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.logo-sm{font-family:'Righteous',cursive;font-size:26px;color:var(--purple);letter-spacing:1px}
+.user-avatar{
+  width:38px;height:38px;border-radius:50%;
+  background:linear-gradient(135deg,var(--purple),var(--purple-dark));
+  color:#fff;display:flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:15px;cursor:pointer;
+}
+
+/* location bar */
+.loc-bar{
+  display:flex;align-items:center;gap:8px;
+  background:var(--gray-light);border-radius:12px;padding:10px 14px;
+  cursor:pointer;transition:background .2s;
+}
+.loc-bar:hover{background:#ede9fe}
+.loc-pin{font-size:18px;flex-shrink:0}
+.loc-text{flex:1;min-width:0}
+.loc-label{font-size:11px;font-weight:700;color:var(--purple);letter-spacing:.5px;text-transform:uppercase}
+.loc-addr{font-size:13px;font-weight:700;color:var(--text-dark);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.loc-arrow{font-size:12px;color:var(--purple-light)}
+
+/* map area */
+.map-container{
+  margin:14px 16px;border-radius:18px;overflow:hidden;
+  box-shadow:0 4px 20px rgba(124,58,237,.12);position:relative;height:180px;
+}
+.map-svg{width:100%;height:100%;display:block}
+.map-overlay{
+  position:absolute;top:10px;right:10px;
+  background:#fff;border-radius:10px;padding:6px 10px;
+  font-size:12px;font-weight:700;color:var(--purple);
+  box-shadow:0 2px 10px rgba(0,0,0,.1);
+}
+
+/* category tabs */
+.cat-scroll{
+  display:flex;gap:10px;padding:0 16px;overflow-x:auto;
+  scrollbar-width:none;margin-bottom:16px;
+}
+.cat-scroll::-webkit-scrollbar{display:none}
+.cat-btn{
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  padding:10px 16px;border:2px solid transparent;border-radius:16px;
+  background:#fff;cursor:pointer;transition:all .2s;flex-shrink:0;
+  box-shadow:0 2px 8px rgba(0,0,0,.06);
+}
+.cat-btn.active{background:var(--purple);border-color:var(--purple);box-shadow:0 4px 14px rgba(124,58,237,.35)}
+.cat-btn.active .cat-emoji,.cat-btn.active .cat-label{color:#fff!important}
+.cat-emoji{font-size:22px}
+.cat-label{font-size:12px;font-weight:700;color:var(--text-mid)}
+
+/* section title */
+.section-title{
+  font-size:17px;font-weight:800;color:var(--text-dark);
+  padding:0 16px;margin-bottom:12px;display:flex;align-items:center;gap:6px;
+}
+
+/* restaurant cards */
+.rest-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:12px;
+  padding:0 16px;margin-bottom:20px;
+}
+.rest-card{
+  background:#fff;border-radius:18px;overflow:hidden;
+  box-shadow:0 3px 16px rgba(0,0,0,.07);cursor:pointer;
+  transition:transform .2s,box-shadow .2s;
+}
+.rest-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(124,58,237,.15)}
+.rest-img{
+  width:100%;height:90px;display:flex;align-items:center;justify-content:center;
+  font-size:40px;position:relative;
+}
+.rest-img.burger{background:linear-gradient(135deg,#FFF3E0,#FFE0B2)}
+.rest-img.pizza{background:linear-gradient(135deg,#FFF8E1,#FFECB3)}
+.rest-img.drink{background:linear-gradient(135deg,#E8F5E9,#C8E6C9)}
+.rest-img.all{background:linear-gradient(135deg,#F3E5F5,#E1BEE7)}
+.rest-dist{
+  position:absolute;bottom:6px;right:8px;
+  background:rgba(0,0,0,.55);color:#fff;font-size:10px;font-weight:700;
+  padding:2px 7px;border-radius:20px;
+}
+.rest-info{padding:10px 12px 12px}
+.rest-name{font-size:13px;font-weight:800;color:var(--text-dark);margin-bottom:3px}
+.rest-meta{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600;color:var(--text-mid)}
+.rest-rating{color:#F59E0B}
+.rest-time{
+  background:var(--gray-light);color:var(--purple);
+  font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;margin-left:auto;
+}
+/* map pins nearby list */
+.nearby-list{padding:0 16px;margin-bottom:80px}
+.nearby-item{
+  display:flex;align-items:center;gap:12px;background:#fff;
+  border-radius:14px;padding:12px 14px;margin-bottom:10px;
+  box-shadow:0 2px 10px rgba(0,0,0,.06);cursor:pointer;
+  transition:transform .15s;
+}
+.nearby-item:hover{transform:translateX(4px)}
+.nearby-pin{
+  width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;
+  font-size:18px;flex-shrink:0;
+}
+.nearby-pin.p1{background:#FFF3E0}
+.nearby-pin.p2{background:#FFF8E1}
+.nearby-pin.p3{background:#E8F5E9}
+.nearby-pin.p4{background:#F3E5F5}
+.nearby-pin.p5{background:#FCE4EC}
+.nearby-info{flex:1}
+.nearby-name{font-size:13px;font-weight:800;color:var(--text-dark)}
+.nearby-sub{font-size:11px;font-weight:600;color:var(--text-mid);margin-top:2px}
+.nearby-dist-badge{
+  background:var(--gray-light);color:var(--purple);
+  font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;flex-shrink:0;
+}
+/* bottom nav */
+.bottom-nav{
+  position:fixed;bottom:0;left:0;right:0;
+  background:#fff;display:flex;padding:10px 0 14px;
+  box-shadow:0 -4px 20px rgba(0,0,0,.08);z-index:100;
+}
+.nav-item{
+  flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;
+  cursor:pointer;transition:color .2s;color:var(--text-mid);
+  font-family:'Nunito',sans-serif;font-size:10px;font-weight:700;
+}
+.nav-item.active{color:var(--purple)}
+.nav-icon{font-size:20px}
+/* food item cards horizontal */
+.food-scroll{
+  display:flex;gap:12px;padding:0 16px;overflow-x:auto;
+  scrollbar-width:none;margin-bottom:20px;
+}
+.food-scroll::-webkit-scrollbar{display:none}
+.food-card{
+  flex-shrink:0;width:130px;background:#fff;border-radius:16px;
+  box-shadow:0 3px 12px rgba(0,0,0,.07);cursor:pointer;overflow:hidden;
+  transition:transform .2s;
+}
+.food-card:hover{transform:translateY(-3px)}
+.food-card-img{height:80px;display:flex;align-items:center;justify-content:center;font-size:36px}
+.food-card-img.bg1{background:linear-gradient(135deg,#FFF3E0,#FFE0B2)}
+.food-card-img.bg2{background:linear-gradient(135deg,#FFF8E1,#FFECB3)}
+.food-card-img.bg3{background:linear-gradient(135deg,#E8F5E9,#C8E6C9)}
+.food-card-img.bg4{background:linear-gradient(135deg,#FCE4EC,#F8BBD0)}
+.food-card-body{padding:8px 10px 10px}
+.food-card-name{font-size:12px;font-weight:800;color:var(--text-dark);margin-bottom:2px}
+.food-card-price{font-size:13px;font-weight:800;color:var(--purple)}
+</style>
+</head>
+<body>
+
+<!-- ════════════ AUTH SCREEN ════════════ -->
+<div id="screen-auth" class="screen active">
+  <div class="bg-pattern" id="bgPattern"></div>
+  <div class="auth-card">
+    <div class="logo-area">
+      <span class="logo-emoji">🍔</span>
+      <div class="logo-name">NexFood</div>
+    </div>
+    <p class="tagline">Faça login ou <span>cadastre-se</span> para comer de tudo</p>
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('login',this)">Entrar</button>
+      <button class="tab-btn" onclick="switchTab('register',this)">Cadastrar</button>
+    </div>
+
+    <!-- LOGIN -->
+    <div class="panel active" id="panel-login">
+      <div class="form-group">
+        <label>E-mail</label>
+        <div class="input-wrap"><span class="input-icon">📧</span>
+          <input type="email" id="login-email" placeholder="seu@email.com">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Senha</label>
+        <div class="input-wrap"><span class="input-icon">🔒</span>
+          <input type="password" id="login-pass" placeholder="••••••••">
+        </div>
+      </div>
+      <div class="forgot"><a href="#">Esqueci minha senha</a></div>
+      <button class="btn-main" onclick="doLogin()">🚀 Entrar agora</button>
+      <div class="divider">ou continue com</div>
+      <div class="social-row">
+        <button class="btn-social" onclick="doLogin()">
+          <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.2l6.7-6.7C35.8 2.4 30.3 0 24 0 14.7 0 6.7 5.4 2.6 13.3l7.8 6C12.1 13.4 17.6 9.5 24 9.5z"/><path fill="#4285F4" d="M46.6 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8c4.4-4.1 7.2-10.1 7.2-17z"/><path fill="#FBBC05" d="M10.4 28.7A14.8 14.8 0 0 1 9.5 24c0-1.6.3-3.2.8-4.7l-7.8-6A24 24 0 0 0 0 24c0 3.9.9 7.5 2.6 10.7l7.8-6z"/><path fill="#34A853" d="M24 48c6.3 0 11.6-2.1 15.5-5.7l-7.5-5.8c-2.1 1.4-4.8 2.2-8 2.2-6.4 0-11.9-3.9-13.6-9.3l-7.8 6C6.7 42.6 14.7 48 24 48z"/></svg>
+          Google
+        </button>
+        <button class="btn-social" onclick="doLogin()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="#1877F2"><path d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.413c0-3.025 1.792-4.697 4.533-4.697 1.313 0 2.686.236 2.686.236v2.97h-1.514c-1.491 0-1.956.93-1.956 1.887v2.264h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/></svg>
+          Facebook
+        </button>
+      </div>
+      <p class="bottom-note">Não tem conta? <a href="#" onclick="switchTabLink('register')">Cadastre-se grátis</a></p>
+    </div>
+
+    <!-- REGISTER -->
+    <div class="panel" id="panel-register">
+      <div class="form-group">
+        <label>Nome completo</label>
+        <div class="input-wrap"><span class="input-icon">👤</span>
+          <input type="text" id="reg-name" placeholder="Seu nome">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>E-mail</label>
+        <div class="input-wrap"><span class="input-icon">📧</span>
+          <input type="email" id="reg-email" placeholder="seu@email.com">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Senha</label>
+        <div class="input-wrap"><span class="input-icon">🔒</span>
+          <input type="password" id="reg-pass" placeholder="Mínimo 8 caracteres">
+        </div>
+      </div>
+      <button class="btn-main" onclick="doRegister()">🎉 Criar minha conta</button>
+      <div class="divider">ou continue com</div>
+      <div class="social-row">
+        <button class="btn-social" onclick="doRegister()">
+          <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.2l6.7-6.7C35.8 2.4 30.3 0 24 0 14.7 0 6.7 5.4 2.6 13.3l7.8 6C12.1 13.4 17.6 9.5 24 9.5z"/><path fill="#4285F4" d="M46.6 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8c4.4-4.1 7.2-10.1 7.2-17z"/><path fill="#FBBC05" d="M10.4 28.7A14.8 14.8 0 0 1 9.5 24c0-1.6.3-3.2.8-4.7l-7.8-6A24 24 0 0 0 0 24c0 3.9.9 7.5 2.6 10.7l7.8-6z"/><path fill="#34A853" d="M24 48c6.3 0 11.6-2.1 15.5-5.7l-7.5-5.8c-2.1 1.4-4.8 2.2-8 2.2-6.4 0-11.9-3.9-13.6-9.3l-7.8 6C6.7 42.6 14.7 48 24 48z"/></svg>
+          Google
+        </button>
+        <button class="btn-social" onclick="doRegister()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="#1877F2"><path d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.413c0-3.025 1.792-4.697 4.533-4.697 1.313 0 2.686.236 2.686.236v2.97h-1.514c-1.491 0-1.956.93-1.956 1.887v2.264h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/></svg>
+          Facebook
+        </button>
+      </div>
+      <p class="bottom-note">Já tem conta? <a href="#" onclick="switchTabLink('login')">Faça login</a></p>
+    </div>
+  </div>
+</div>
+
+<!-- toast -->
+<div class="toast" id="toast">✅ Conta criada! Faça login para continuar 🎉</div>
+
+<!-- ════════════ HOME SCREEN ════════════ -->
+<div id="screen-home" class="screen" style="flex-direction:column">
+
+  <!-- Top bar -->
+  <div class="topbar">
+    <div class="topbar-row1">
+      <div class="logo-sm">🍔 NexFood</div>
+      <div class="user-avatar" id="avatarInitial">U</div>
+    </div>
+    <!-- Location bar -->
+    <div class="loc-bar">
+      <span class="loc-pin">📍</span>
+      <div class="loc-text">
+        <div class="loc-label">Sua localização</div>
+        <div class="loc-addr" id="locAddr">Obtendo sua localização…</div>
+      </div>
+      <span class="loc-arrow">▾</span>
+    </div>
+  </div>
+
+  <!-- scroll area -->
+  <div style="overflow-y:auto;flex:1;padding-top:8px">
+
+    <!-- MAP -->
+    <div class="map-container">
+      <svg class="map-svg" viewBox="0 0 400 180" xmlns="http://www.w3.org/2000/svg">
+        <!-- background -->
+        <rect width="400" height="180" fill="#e8f4e8"/>
+        <!-- roads -->
+        <rect x="0" y="80" width="400" height="12" fill="#fff" opacity=".9"/>
+        <rect x="0" y="140" width="400" height="8" fill="#fff" opacity=".7"/>
+        <rect x="180" y="0" width="12" height="180" fill="#fff" opacity=".9"/>
+        <rect x="300" y="0" width="8" height="180" fill="#fff" opacity=".7"/>
+        <rect x="60" y="0" width="8" height="180" fill="#fff" opacity=".7"/>
+        <!-- blocks -->
+        <rect x="10" y="10" width="42" height="62" rx="4" fill="#d4edda"/>
+        <rect x="70" y="10" width="100" height="62" rx="4" fill="#c8e6c9"/>
+        <rect x="196" y="10" width="96" height="62" rx="4" fill="#d4edda"/>
+        <rect x="310" y="10" width="82" height="62" rx="4" fill="#c8e6c9"/>
+        <rect x="10" y="100" width="42" height="72" rx="4" fill="#c8e6c9"/>
+        <rect x="70" y="100" width="100" height="32" rx="4" fill="#d4edda"/>
+        <rect x="70" y="150" width="100" height="22" rx="4" fill="#c8e6c9"/>
+        <rect x="196" y="100" width="96" height="72" rx="4" fill="#d4edda"/>
+        <rect x="310" y="100" width="82" height="72" rx="4" fill="#c8e6c9"/>
+        <!-- YOU marker -->
+        <circle cx="186" cy="86" r="10" fill="#7C3AED" opacity=".25"/>
+        <circle cx="186" cy="86" r="6" fill="#7C3AED"/>
+        <circle cx="186" cy="86" r="2.5" fill="#fff"/>
+        <!-- restaurant pins -->
+        <g transform="translate(100,40)">
+          <circle r="10" fill="#EF4444"/><text x="0" y="4" text-anchor="middle" font-size="10">🍔</text>
+        </g>
+        <g transform="translate(248,35)">
+          <circle r="10" fill="#F59E0B"/><text x="0" y="4" text-anchor="middle" font-size="10">🍕</text>
+        </g>
+        <g transform="translate(340,120)">
+          <circle r="10" fill="#10B981"/><text x="0" y="4" text-anchor="middle" font-size="10">🥤</text>
+        </g>
+        <g transform="translate(85,128)">
+          <circle r="10" fill="#8B5CF6"/><text x="0" y="4" text-anchor="middle" font-size="10">🍔</text>
+        </g>
+        <g transform="translate(220,130)">
+          <circle r="10" fill="#EC4899"/><text x="0" y="4" text-anchor="middle" font-size="10">🍕</text>
+        </g>
+      </svg>
+      <div class="map-overlay">📍 5 próximos</div>
+    </div>
+
+    <!-- CATEGORY TABS -->
+    <div class="cat-scroll">
+      <button class="cat-btn active" onclick="setCategory('todos',this)">
+        <span class="cat-emoji">🍽️</span><span class="cat-label">Todos</span>
+      </button>
+      <button class="cat-btn" onclick="setCategory('hamburguer',this)">
+        <span class="cat-emoji">🍔</span><span class="cat-label">Hambúrgueres</span>
+      </button>
+      <button class="cat-btn" onclick="setCategory('pizza',this)">
+        <span class="cat-emoji">🍕</span><span class="cat-label">Pizzas</span>
+      </button>
+      <button class="cat-btn" onclick="setCategory('bebidas',this)">
+        <span class="cat-emoji">🥤</span><span class="cat-label">Bebidas</span>
+      </button>
+      <button class="cat-btn" onclick="setCategory('sobremesas',this)">
+        <span class="cat-emoji">🍦</span><span class="cat-label">Sobremesas</span>
+      </button>
+    </div>
+
+    <!-- DESTAQUES (horizontal scroll) -->
+    <div class="section-title">🔥 Destaques</div>
+    <div class="food-scroll" id="foodHighlights">
+      <!-- filled by JS -->
+    </div>
+
+    <!-- RESTAURANTES PRÓXIMOS -->
+    <div class="section-title">📍 Restaurantes Próximos</div>
+    <div class="rest-grid" id="restGrid">
+      <!-- filled by JS -->
+    </div>
+
+    <!-- TODOS OS LOCAIS NO MAPA -->
+    <div class="section-title">🗺️ Todos os locais</div>
+    <div class="nearby-list" id="nearbyList">
+      <!-- filled by JS -->
+    </div>
+
+  </div><!-- end scroll -->
+
+  <!-- bottom nav -->
+  <div class="bottom-nav">
+    <div class="nav-item active"><span class="nav-icon">🏠</span>Início</div>
+    <div class="nav-item"><span class="nav-icon">🔍</span>Buscar</div>
+    <div class="nav-item"><span class="nav-icon">🛒</span>Pedidos</div>
+    <div class="nav-item"><span class="nav-icon">❤️</span>Favoritos</div>
+    <div class="nav-item" onclick="goLogout()"><span class="nav-icon">👤</span>Perfil</div>
+  </div>
+
+</div><!-- end home -->
+
+
+<script>
+/* ── floating burgers ── */
+const burgerSvg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="{s}" height="{s}"><rect x="4" y="8" width="56" height="10" rx="5"/><rect x="8" y="22" width="48" height="8" rx="4"/><rect x="4" y="34" width="56" height="14" rx="7"/><rect x="4" y="52" width="56" height="10" rx="5"/></svg>`;
+const bp=document.getElementById('bgPattern');
+for(let i=0;i<22;i++){
+  const el=document.createElement('div');el.className='burger-icon';
+  const s=32+Math.random()*52;el.innerHTML=burgerSvg.replace(/{s}/g,s);
+  el.style.left=Math.random()*100+'vw';el.style.top=Math.random()*100+'vh';
+  el.style.animationDuration=(4+Math.random()*5)+'s';
+  el.style.animationDelay=-(Math.random()*6)+'s';
+  el.style.transform=`rotate(${Math.random()*360}deg)`;
+  bp.appendChild(el);
+}
+
+/* ── tab auth ── */
+function switchTab(name,btn){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('panel-'+name).classList.add('active');
+}
+function switchTabLink(name){
+  switchTab(name,document.querySelectorAll('.tab-btn')[name==='login'?0:1]);
+}
+
+/* ── toast ── */
+function showToast(msg){
+  const t=document.getElementById('toast');t.textContent=msg;
+  t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+/* ── register → force login ── */
+function doRegister(){
+  const name=document.getElementById('reg-name').value.trim()||'Usuário';
+  localStorage.setItem('nf_name',name);
+  showToast('✅ Conta criada! Faça login para continuar 🎉');
+  setTimeout(()=>switchTabLink('login'),1200);
+}
+
+/* ── login → home ── */
+function doLogin(){
+  const name=localStorage.getItem('nf_name')||'Usuário';
+  document.getElementById('avatarInitial').textContent=name[0].toUpperCase();
+  goHome();
+  getLocation();
+}
+function goHome(){
+  document.getElementById('screen-auth').classList.remove('active');
+  document.getElementById('screen-home').classList.add('active');
+}
+function goLogout(){
+  document.getElementById('screen-home').classList.remove('active');
+  document.getElementById('screen-auth').classList.add('active');
+}
+
+/* ── geolocation ── */
+function getLocation(){
+  const el=document.getElementById('locAddr');
+  if(navigator.geolocation){
+    navigator.geolocation.getCurrentPosition(pos=>{
+      const lat=pos.coords.latitude.toFixed(4);
+      const lng=pos.coords.longitude.toFixed(4);
+      el.textContent=`${lat}, ${lng} — Localização atual`;
+    },()=>{el.textContent='Rua das Flores, 123 — Centro';});
+  } else {
+    el.textContent='Rua das Flores, 123 — Centro';
+  }
+}
+
+/* ── data ── */
+const allItems={
+  todos:[
+    {emoji:'🍔',name:'X-Burguer Clássico',price:'R$ 22,90',bg:'bg1'},
+    {emoji:'🍕',name:'Pizza Margherita',price:'R$ 38,00',bg:'bg2'},
+    {emoji:'🥤',name:'Milk Shake Oreo',price:'R$ 18,00',bg:'bg3'},
+    {emoji:'🍟',name:'Batata Frita G',price:'R$ 14,50',bg:'bg4'},
+    {emoji:'🌮',name:'Combo X-Tudo',price:'R$ 32,90',bg:'bg1'},
+    {emoji:'🍦',name:'Sorvete 2 bolas',price:'R$ 11,00',bg:'bg3'},
+  ],
+  hamburguer:[
+    {emoji:'🍔',name:'X-Burguer Clássico',price:'R$ 22,90',bg:'bg1'},
+    {emoji:'🍔',name:'Smash Burguer',price:'R$ 28,90',bg:'bg1'},
+    {emoji:'🍔',name:'Combo X-Tudo',price:'R$ 32,90',bg:'bg1'},
+    {emoji:'🍔',name:'Duplo Cheese',price:'R$ 26,00',bg:'bg4'},
+  ],
+  pizza:[
+    {emoji:'🍕',name:'Pizza Margherita',price:'R$ 38,00',bg:'bg2'},
+    {emoji:'🍕',name:'Pepperoni Grande',price:'R$ 45,00',bg:'bg2'},
+    {emoji:'🍕',name:'Frango c/ Catupiry',price:'R$ 42,00',bg:'bg2'},
+    {emoji:'🍕',name:'Quatro Queijos',price:'R$ 47,00',bg:'bg2'},
+  ],
+  bebidas:[
+    {emoji:'🥤',name:'Milk Shake Oreo',price:'R$ 18,00',bg:'bg3'},
+    {emoji:'🧃',name:'Suco de Laranja',price:'R$ 9,00',bg:'bg3'},
+    {emoji:'🍺',name:'Cerveja Gelada',price:'R$ 8,50',bg:'bg3'},
+    {emoji:'☕',name:'Café Especial',price:'R$ 7,00',bg:'bg3'},
+  ],
+  sobremesas:[
+    {emoji:'🍦',name:'Sorvete 2 bolas',price:'R$ 11,00',bg:'bg3'},
+    {emoji:'🎂',name:'Brownie c/ Nutella',price:'R$ 15,00',bg:'bg4'},
+    {emoji:'🧁',name:'Cupcake Red Velvet',price:'R$ 12,00',bg:'bg4'},
+  ],
+};
+
+const allRests={
+  todos:[
+    {emoji:'🍔',type:'burger',name:'Burguer King Street',rating:'4.8',time:'20 min',dist:'0.3km',img:'burger'},
+    {emoji:'🍕',type:'pizza',name:'Don Corleone Pizza',rating:'4.6',time:'35 min',dist:'0.7km',img:'pizza'},
+    {emoji:'🥤',type:'drink',name:'Shake House',rating:'4.5',time:'15 min',dist:'0.5km',img:'drink'},
+    {emoji:'🍔',type:'burger',name:'Smash Bros Burger',rating:'4.9',time:'25 min',dist:'1.1km',img:'burger'},
+  ],
+  hamburguer:[
+    {emoji:'🍔',type:'burger',name:'Burguer King Street',rating:'4.8',time:'20 min',dist:'0.3km',img:'burger'},
+    {emoji:'🍔',type:'burger',name:'Smash Bros Burger',rating:'4.9',time:'25 min',dist:'1.1km',img:'burger'},
+  ],
+  pizza:[
+    {emoji:'🍕',type:'pizza',name:'Don Corleone Pizza',rating:'4.6',time:'35 min',dist:'0.7km',img:'pizza'},
+    {emoji:'🍕',type:'pizza',name:'Pizzaria Napoli',rating:'4.4',time:'40 min',dist:'1.5km',img:'pizza'},
+  ],
+  bebidas:[
+    {emoji:'🥤',type:'drink',name:'Shake House',rating:'4.5',time:'15 min',dist:'0.5km',img:'drink'},
+    {emoji:'🥤',type:'drink',name:'Juice Bar Fresh',rating:'4.7',time:'20 min',dist:'0.9km',img:'drink'},
+  ],
+  sobremesas:[
+    {emoji:'🍦',type:'all',name:'Sweet Corner',rating:'4.8',time:'18 min',dist:'0.6km',img:'all'},
+  ],
+};
+
+const nearbyAll=[
+  {emoji:'🍔',pin:'p1',name:'Burguer King Street',sub:'Hambúrgueres • Aberto agora',dist:'0.3 km'},
+  {emoji:'🥤',pin:'p3',name:'Shake House',sub:'Bebidas • Aberto agora',dist:'0.5 km'},
+  {emoji:'🍕',pin:'p2',name:'Don Corleone Pizza',sub:'Pizzas • Fecha às 23h',dist:'0.7 km'},
+  {emoji:'🍦',pin:'p4',name:'Sweet Corner',sub:'Sobremesas • Aberto',dist:'0.6 km'},
+  {emoji:'🍔',pin:'p5',name:'Smash Bros Burger',sub:'Hambúrgueres • Aberto',dist:'1.1 km'},
+];
+
+let currentCat='todos';
+
+function renderHighlights(cat){
+  const items=allItems[cat]||allItems.todos;
+  document.getElementById('foodHighlights').innerHTML=items.map(i=>`
+    <div class="food-card">
+      <div class="food-card-img ${i.bg}">${i.emoji}</div>
+      <div class="food-card-body">
+        <div class="food-card-name">${i.name}</div>
+        <div class="food-card-price">${i.price}</div>
+      </div>
+    </div>`).join('');
+}
+
+function renderRests(cat){
+  const rests=allRests[cat]||allRests.todos;
+  document.getElementById('restGrid').innerHTML=rests.map(r=>`
+    <div class="rest-card">
+      <div class="rest-img ${r.img}">${r.emoji}<span class="rest-dist">📍${r.dist}</span></div>
+      <div class="rest-info">
+        <div class="rest-name">${r.name}</div>
+        <div class="rest-meta">
+          <span class="rest-rating">★ ${r.rating}</span>
+          <span class="rest-time">⏱ ${r.time}</span>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function renderNearby(){
+  document.getElementById('nearbyList').innerHTML=nearbyAll.map(n=>`
+    <div class="nearby-item">
+      <div class="nearby-pin ${n.pin}">${n.emoji}</div>
+      <div class="nearby-info">
+        <div class="nearby-name">${n.name}</div>
+        <div class="nearby-sub">${n.sub}</div>
+      </div>
+      <div class="nearby-dist-badge">📍 ${n.dist}</div>
+    </div>`).join('');
+}
+
+function setCategory(cat,btn){
+  currentCat=cat;
+  document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderHighlights(cat);
+  renderRests(cat);
+}
+
+/* init home data */
+renderHighlights('todos');
+renderRests('todos');
+renderNearby();
+</script>
+</body>
+</html>
